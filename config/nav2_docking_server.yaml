@@ -1,0 +1,45 @@
+/**:
+  ros__parameters:
+    controller_frequency: 50.0
+    initial_perception_timeout: 5.0 # Timeout (s) to wait to obtain intial perception of the dock
+    wait_charge_timeout: 5.0 # Timeout (s) to wait to see if charging starts after docking
+    dock_approach_timeout: 30.0 # timeout (s) to attempt vision-control approach loop
+    undock_linear_tolerance: 0.05 # Tolerance (m) to exit the undocking control loop at staging pose
+    undock_angular_tolerance: 0.1 # Angular Tolerance (rad) to exist undocking loop at staging pose
+    max_retries: 3
+    base_frame: "base_link"
+    fixed_frame: "odom"
+    dock_backwards: false
+    dock_prestaging_tolerance: 0.02 # L2 distance in X,Y,Theta from the staging pose to bypass navigation
+
+    # Types of docks
+    dock_plugins: ['simple_charging_dock']
+    simple_charging_dock:
+      plugin: 'opennav_docking::SimpleChargingDock'
+      docking_threshold: 0.02 # If not using stall detection, the pose threshold to the docking pose where isDocked() = true
+      staging_x_offset: -0.5 # Staging pose offset forward (negative) of dock pose (m); = -distance in front of the dock to the pre-staging position, negative since X+ of the dock points away from the robot
+      staging_yaw_offset: 0.0 # angle relative to the dock pose
+      use_external_detection_pose: true # Whether to use external detection topic for dock or use the databases' pose
+      use_battery_status: false # Whether to use the battery state message or isDocked() for isCharging(); TODO: use this
+      use_stall_detection: false # Whether or not to use stall detection for isDocked() or positional threshold
+
+      external_detection_timeout: 3.0
+      external_detection_translation_x: -0.15 # pose of the docking point relative to the tag pose
+      external_detection_translation_y: 0.0
+      external_detection_rotation_roll: -1.57
+      external_detection_rotation_pitch: 1.57
+      external_detection_rotation_yaw: 0.0
+      filter_coef: 0.1
+
+    # Dock instances
+    docks: ['home_dock']  # Input your docks here
+    home_dock:
+      type: 'simple_charging_dock'
+      frame: map
+      pose: [0.15, 0.0, 0.0] # position of the dock device (not the staging position), the front (X+) of the dock should point away from the robot
+
+    controller:
+      k_phi: 3.0
+      k_delta: 2.0
+      v_linear_min: 0.05
+      v_linear_max: 0.01

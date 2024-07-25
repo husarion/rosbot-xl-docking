@@ -1,0 +1,28 @@
+x-common-config:
+  &common-config
+  network_mode: host
+  ipc: host
+  volumes:
+    - /tmp/.X11-unix:/tmp/.X11-unix:rw
+  env_file: .env.dds
+
+x-gui-config:
+  &gui-config
+  environment:
+    - DISPLAY=${DISPLAY:?err}
+    - LIBGL_ALWAYS_SOFTWARE=${LIBGL_ALWAYS_SOFTWARE:-1}
+    - NVIDIA_VISIBLE_DEVICES=all # if LIBGL_ALWAYS_SOFTWARE=1 this env var is ignored
+    - NVIDIA_DRIVER_CAPABILITIES=all # if LIBGL_ALWAYS_SOFTWARE=1 this env var is ignored
+
+services:
+  rviz:
+    image: husarion/rviz2:humble-11.2.9-20240111
+    <<:
+      - *common-config
+      - *gui-config
+    volumes:
+      - ./config/default.rviz:/default.rviz
+    command: >
+      rviz2 -d /default.rviz --ros-args
+        -r /tf:=tf
+        -r /tf_static:=tf_static
