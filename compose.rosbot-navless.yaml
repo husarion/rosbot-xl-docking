@@ -33,49 +33,17 @@ services:
         params_file:=/params.yaml
         parent_frame:=camera_mount_link
 
-  rplidar:
-    image: husarion/rplidar:humble-1.0.1-20240216
-    <<:
-      - *common-config
-    devices:
-      - /dev/ttyRPLIDAR:/dev/ttyUSB0
-    depends_on:
-      rosbot: { condition: service_healthy }
-    command: >
-      ros2 launch /husarion_utils/rplidar.launch.py
-        serial_baudrate:=${LIDAR_BAUDRATE:-256000}
-        serial_port:=/dev/ttyUSB0
-        healthcheck:=True
-
-  navigation:
-    image: husarion/navigation2:humble-1.1.12-20240123
-    <<:
-      - *common-config
-    depends_on:
-      rplidar: { condition: service_healthy }
-      rosbot: { condition: service_healthy }
-    volumes:
-      - ./config/nav2.yaml:/nav2.yaml
-      - ./config/nav_to_pose.xml:/nav_to_pose.xml
-      - ./maps:/maps
-    command: >
-      ros2 launch /husarion_utils/bringup_launch.py
-        slam:=True
-        params_file:=/nav2.yaml
-        map:=/maps/map.yaml
-        use_sim_time:=False
-
   docking:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.docking
     <<:
       *common-config
     depends_on:
-      navigation: { condition: service_healthy }
+      rosbot: { condition: service_healthy }
     volumes:
       - ./config/aruco_tracker.yaml:/aruco_tracker.yaml
-      - ./config/nav2_docking_server.yaml:/nav2_docking_server.yaml
+      - ./config/nav2_docking_server.navless.yaml:/nav2_docking_server.yaml
     command: >
       ros2 launch rosbot_xl_docking docking.launch.py
         aruco_tracker_params_file:=/aruco_tracker.yaml

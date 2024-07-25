@@ -6,7 +6,8 @@ Reference project with ROSbot XL docking to the charging station with Nav2
 
 ## 🛍️ Necessary Hardware
 
-For the execution of this project you need to have **[ROSbot XL](https://husarion.com/manuals/rosbot-xl/)** in the **Autonomy Package**.
+For the execution of this project you need to have **[ROSbot XL](https://husarion.com/manuals/rosbot-xl/)** in the **Telepresence Package**.
+For autonomous navigation, you will additionally need a **LiDAR** device that you can get with our **Autonomy Package**.
 It is available for purchase as a complete set at [our online store](https://store.husarion.com/collections/robots/products/rosbot-xl).
 
 ## Quick start
@@ -23,15 +24,19 @@ It is available for purchase as a complete set at [our online store](https://sto
 To see all available commands, run `just`:
 
 ```bash
-husarion@rosbotxl:~/rosbot-xl-docking$ just
+$ just
 Available recipes:
-    connect-husarnet joincode hostname # [PC] connect to Husarnet VPN network
+    husarnet joincode hostname # [PC/ROSbot] connect to Husarnet VPN network
     sync hostname="${SYNC_HOSTNAME}" password="husarion" # [PC] Copy repo content to remote host with 'rsync' and watch for changes
-    flash-firmware # [ROSbot] flash the proper firmware for STM32 microcontroller in ROSbot XL
-    oak-udev       # [ROSbot] setup udevs for managing Movidius USB device permissions
-    start-rosbot   # [ROSbot] start containers on a physical ROSbot XL
-    start-pc       # [PC] start RViz
-    dds-tunning    # [PC/ROSbot] optimize DDS settings; Use if you experience stability issues.
+    flash                      # [ROSbot] flash the proper firmware for STM32 microcontroller in ROSbot XL
+    udev                       # [ROSbot] setup udevs for managing OAK-1 USB camera permissions
+    rosbot                     # [ROSbot] start containers on a physical ROSbot XL
+    rosbot-navless             # [ROSbot] start containers on a physical ROSbot XL (without Nav2)
+    rviz                       # [PC] start RViz
+    teleop                     # [PC] start RQT Image View with keyboard teleop and joy2twist
+    dock                       # [PC] dock
+    undock                     # [PC] undock
+    dds-tunning                # [PC/ROSbot] optimize DDS settings; Use if you experience stability issues.
 ```
 
 ### 🌎 Step 1: Connecting ROSbot and Laptop over VPN
@@ -43,7 +48,7 @@ Ensure that both ROSbot XL and your laptop are linked to the same Husarnet VPN n
    ```bash
    cd rosbot-xl-docking/ # remember to run all "just" commands in the repo root folder
    export JOINCODE=<PASTE_YOUR_JOIN_CODE_HERE>
-   just connect-husarnet $JOINCODE my-laptop
+   just husarnet $JOINCODE my-laptop
    ```
 3. Run in the linux terminal of your ROSbot:
    ```bash
@@ -94,50 +99,68 @@ To ensure proper user configuration, review the content of the `.env` file and s
 
 2. Flashing the ROSbot's Firmware.
 
-   To flash the Micro-ROS based firmware for STM32F4 microcontroller responsible for low-level functionalities of ROSbot XL, execute in the ROSbot's shell:
+To flash the Micro-ROS based firmware for STM32F4 microcontroller responsible for low-level functionalities of ROSbot XL, execute in the ROSbot's shell:
 
-   ```bash
-   just flash-firmware
-   ```
+```bash
+just flash
+```
 
 3. Setting OAK-1 camera udevs.
 
-    To make your camera work with ROS, you have to setup permissions for its USB device:
+To make your camera work with ROS, you have to setup permissions for its USB device:
 
-    ```bash
-    just oak-udev
-    ```
+```bash
+just udev
+```
 
-3. Running autonomy on ROSbot.
+3. Running the ROSbot stack.
 
-   ```bash
-   just start-rosbot
-   ```
+```bash
+just rosbot-navless
+```
 
 #### PC
 
-To show the RViz user interface, execute below command on your PC:
+To show the camera feed and keyboard teleop console, execute below command on your PC:
 
 ```bash
-just start-pc
+just teleop
 ```
 
-### 🚗 Step 5: Docking using ROS 2 actions
+### 🚗 Step 5: Docking
 
 The default docking configuration assumes that your ROSbot is turned on while it's docked.
-Place the robot in the charging position and then restart the stack using `just start-rosbot`.
+Place the robot in the charging position and then restart the stack using `just rosbot-navless`.
 
-To initiate the undocking sequence, attach a terminal to the docking container on your ROSbot (which has ROS 2 with the `opennav_docking` package) ...and use the `DockRobot` action:
-```sh
-docker exec -it rosbot-xl-docking-docking-1 bash
-ros2 action send_goal /undock_robot opennav_docking_msgs/action/UndockRobot "{dock_type: simple_charging_dock}"
+1. Undocking
+
+To initiate the undocking sequence:
+```bash
+just undock
 ```
 
-The robot will drive backwards half a meter away from the docking station.
+The robot will slowly drive backwards half a meter away from the docking station.
+Then you can start driving the ROSbot around.
 
-Then you can use the "2D Goal Pose" tool in RViz to make the ROSbot navigate to any location on the map.
+2. Docking
 
-ROSbot can autonomously return to the station and attach back to it from any location in the room:
-```sh
-ros2 action send_goal /dock_robot opennav_docking_msgs/action/DockRobot "{dock_id: home_dock}"
+In order to dock to the charging station, you will have to roughly align with the station. Then use:
+```bash
+just dock
 ```
+opennav_docking will detect the ArUco marker and autonomously dock the robot.
+
+### 🚗 Step 6: Autonomous Return to The Charging Station
+
+If you have the **Autonomy Package**, you can use `just rosbot` instead of `just rosbot-navless` to start the ROSbot stack along with the Nav2 autonomy layer.
+In this case a LiDAR scanner is needed on board.
+You can still use `just teleop` to drive manually even with the autonomous stack.
+
+In order to start driving autonomously, start RViz on your PC:
+```bash
+just rviz
+```
+Then you can use the "2D Goal Pose" tool from the top bar to make the ROSbot navigate to any location on the map.
+
+At any time, ROSbot can autonomously return to the station and attach back to it from any location in the room.
+To do that, use `just dock` like before.

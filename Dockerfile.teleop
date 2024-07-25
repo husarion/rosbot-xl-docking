@@ -1,0 +1,16 @@
+ARG ROS_DISTRO=humble
+FROM husarnet/ros:${ROS_DISTRO}-ros-core
+
+WORKDIR /ros2_ws
+
+# Install rqt tools
+RUN apt-get update --fix-missing && \
+    apt upgrade -y && \
+    apt-get install -y \
+        ros-${ROS_DISTRO}-rqt-image-view \
+        ros-${ROS_DISTRO}-compressed-image-transport \
+        ros-${ROS_DISTRO}-teleop-twist-keyboard && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+CMD ["ros2", "run", "rqt_image_view", "rqt_image_view"]

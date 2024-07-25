@@ -5,13 +5,6 @@ default:
     @just --list --unsorted
 
 [private]
-alias husarnet := connect-husarnet
-[private]
-alias flash := flash-firmware
-[private]
-alias rosbot := start-rosbot
-
-[private]
 pre-commit:
     #!/bin/bash
     if ! command -v pre-commit &> /dev/null; then
@@ -21,7 +14,7 @@ pre-commit:
     pre-commit run -a
 
 # [PC/ROSbot] connect to Husarnet VPN network
-connect-husarnet joincode hostname: _run-as-root
+husarnet joincode hostname: _run-as-root
     #!/bin/bash
     if ! command -v husarnet > /dev/null; then
         echo "Husarnet is not installed. Installing now..."
@@ -38,7 +31,7 @@ sync hostname="${SYNC_HOSTNAME}" password="husarion": _install-rsync _run-as-use
     done
 
 # [ROSbot] flash the proper firmware for STM32 microcontroller in ROSbot XL
-flash-firmware: _install-yq _run-as-user
+flash: _install-yq _run-as-user
     #!/bin/bash
     echo "Stopping all running containers"
     docker ps -q | xargs -r docker stop
@@ -52,27 +45,47 @@ flash-firmware: _install-yq _run-as-user
         ros2 run rosbot_xl_utils flash_firmware --port /dev/ttyUSBDB
         # flash-firmware.py -p /dev/ttyUSBDB # todo
 
-# [ROSbot] setup udevs for managing Movidius USB device permissions
-oak-udev:
+# [ROSbot] setup udevs for managing OAK-1 USB camera permissions
+udev:
     #!/bin/bash
     echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03e7", MODE="0666"' | sudo tee /etc/udev/rules.d/80-movidius.rules
     sudo udevadm control --reload-rules && sudo udevadm trigger
 
 
 # [ROSbot] start containers on a physical ROSbot XL
-start-rosbot: _run-as-user
+rosbot: _run-as-user
     #!/bin/bash
     mkdir -p maps
-    docker compose down
-    # docker compose pull
-    docker compose up
+    docker compose -f compose.rosbot.yaml up
+
+# [ROSbot] start containers on a physical ROSbot XL (without Nav2)
+rosbot-navless: _run-as-user
+    #!/bin/bash
+    docker compose -f compose.rosbot-navless.yaml up
 
 # [PC] start RViz
-start-pc: _run-as-user
+rviz: _run-as-user
     #!/bin/bash
     xhost +local:docker
-    docker compose -f compose.pc.yaml up
+    docker compose -f compose.rviz.yaml up
 
+# [PC] start RQT Image View with keyboard teleop and joy2twist
+teleop: _run-as-user
+    #!/bin/bash
+    xhost +local:docker
+    docker compose -f compose.teleop.yaml up -d
+    docker compose -f compose.teleop.yaml exec teleop bash -c "/ros_entrypoint.sh ros2 run teleop_twist_keyboard teleop_twist_keyboard"
+    docker compose -f compose.teleop.yaml down
+
+# [PC] dock
+dock: _run-as-user
+    #!/bin/bash
+    docker compose -f compose.rosbot.yaml run --rm --no-deps docking bash -c "ros2 action send_goal /dock_robot opennav_docking_msgs/action/DockRobot '{dock_id: home_dock}'"
+
+# [PC] undock
+undock: _run-as-user
+    #!/bin/bash
+    docker compose -f compose.rosbot.yaml run --rm --no-deps docking bash -c "ros2 action send_goal /undock_robot opennav_docking_msgs/action/UndockRobot '{dock_type: simple_charging_dock}'"
 
 # [PC/ROSbot] optimize DDS settings; Use if you experience stability issues.
 dds-tunning:
