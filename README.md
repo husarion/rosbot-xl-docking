@@ -127,7 +127,7 @@ To show the camera feed and keyboard teleop console, execute below command on yo
 just teleop
 ```
 
-### 🚗 Step 5: Docking
+### ⚓ Step 5: Docking
 
 The default docking configuration assumes that your ROSbot is turned on while it's docked.
 Place the robot in the charging position and then restart the stack using `just rosbot-navless`.
