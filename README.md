@@ -61,7 +61,7 @@ Ensure that both ROSbot XL and your laptop are linked to the same Husarnet VPN n
 > SYNC_HOSTNAME=rosbotxl
 > ```
 
-### 📡 Step 2: Sync
+### 📡 Step 2: ROSbot-PC Code Sync
 
 Copy the local changes (on PC) to the remote ROSbot
 
@@ -72,7 +72,7 @@ just sync rosbotxl # If name is not provided, the script will use SYNC_HOSTNAME 
 > [!NOTE]
 > This `just sync` script locks the terminal and synchronizes online all changes made locally on the robot. `rosbotxl` is the name of device set in Husarnet.
 
-### 🔧 Step 3: Verifying User Configuration
+### 🔧 Step 3: User Configuration
 
 To ensure proper user configuration, review the content of the `.env` file and select the appropriate configuration (the default options should be suitable).
 
@@ -83,7 +83,7 @@ To ensure proper user configuration, review the content of the `.env` file and s
 > [!IMPORTANT]
 > The value of the `SYNC_HOSTNAME` parameter in the `.env` file should be the same as the Husarnet hostname for ROSbot XL.
 
-### 🤖 Step 4: Running Docker Setup
+### 🤖 Step 4: Docker Setup
 
 #### ROSbot
 
@@ -94,8 +94,8 @@ To ensure proper user configuration, review the content of the `.env` file and s
    cd rosbot-xl-docking
    ```
 
-   > [!NOTE]
-   > `rosbotxl` is the name of device set in Husarnet.
+> [!NOTE]
+> `rosbotxl` is the name of device set in Husarnet.
 
 2. Flashing the ROSbot's Firmware.
 
@@ -161,6 +161,7 @@ In order to start driving autonomously, start RViz on your PC:
 just rviz
 ```
 Then you can use the "2D Goal Pose" tool from the top bar to make the ROSbot navigate to any location on the map.
+Remember to undock first!
 
 At any time, ROSbot can autonomously return to the station and attach back to it from any location in the room.
 To do that, use `just dock` like before.

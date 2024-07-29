@@ -73,7 +73,7 @@ rviz: _run-as-user
 teleop: _run-as-user
     #!/bin/bash
     xhost +local:docker
-    docker compose -f compose.teleop.yaml up -d
+    docker compose -f compose.teleop.yaml up -d --wait
     docker compose -f compose.teleop.yaml exec teleop bash -c "/ros_entrypoint.sh ros2 run teleop_twist_keyboard teleop_twist_keyboard"
     docker compose -f compose.teleop.yaml down
 
