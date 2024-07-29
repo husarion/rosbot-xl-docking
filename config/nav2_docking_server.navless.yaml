@@ -39,7 +39,11 @@
       pose: [0.15, 0.0, 0.0] # position of the dock device (not the staging position), the front (X+) of the dock should point away from the robot
 
     controller:
-      k_phi: 3.0
-      k_delta: 2.0
+      slowdown_radius: 0.25 # does not seem to have any effect
+      k_phi: 6.0 # default: 3.0
+      k_delta: 5.0 # default: 2.0
+      # Setting linear velocities to different values makes the approach a lot less smooth.
+      # For some reason the robot will not slow down just before docking point is reached.
       v_linear_min: 0.05
-      v_linear_max: 0.01
+      v_linear_max: 0.05
+      v_angular_max: 0.75
