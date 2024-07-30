@@ -56,23 +56,39 @@ udev:
 rosbot: _run-as-user
     #!/bin/bash
     mkdir -p maps
+    docker compose -f compose.rosbot.yaml down
     docker compose -f compose.rosbot.yaml up
 
 # [ROSbot] start containers on a physical ROSbot XL (without Nav2)
 rosbot-navless: _run-as-user
     #!/bin/bash
+    docker compose -f compose.rosbot-navless.yaml down
     docker compose -f compose.rosbot-navless.yaml up
+
+# [ROSbot] start containers on a physical ROSbot XL (with Foxglove)
+rosbot-foxglove: _run-as-user
+    #!/bin/bash
+    docker compose -f compose.rosbot-foxglove.yaml down
+    docker compose -f compose.rosbot-foxglove.yaml up
+
+# [ROSbot] start containers on a physical ROSbot XL (wthout Nav2, with Foxglove)
+rosbot-navless-foxglove: _run-as-user
+    #!/bin/bash
+    docker compose -f compose.rosbot-navless-foxglove.yaml down
+    docker compose -f compose.rosbot-navless-foxglove.yaml up
 
 # [PC] start RViz
 rviz: _run-as-user
     #!/bin/bash
     xhost +local:docker
+    docker compose -f compose.rviz.yaml down
     docker compose -f compose.rviz.yaml up
 
 # [PC] start RQT Image View with keyboard teleop and joy2twist
 teleop: _run-as-user
     #!/bin/bash
     xhost +local:docker
+    docker compose -f compose.teleop.yaml down
     docker compose -f compose.teleop.yaml up -d --wait
     docker compose -f compose.teleop.yaml exec teleop bash -c "/ros_entrypoint.sh ros2 run teleop_twist_keyboard teleop_twist_keyboard"
     docker compose -f compose.teleop.yaml down

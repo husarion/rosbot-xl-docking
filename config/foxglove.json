@@ -1,0 +1,240 @@
+{
+  "configById": {
+    "Teleop!43h55pp": {
+      "topic": "/cmd_vel",
+      "publishRate": 10,
+      "upButton": {
+        "field": "linear-x",
+        "value": 0.3
+      },
+      "downButton": {
+        "field": "linear-x",
+        "value": -0.3
+      },
+      "leftButton": {
+        "field": "angular-z",
+        "value": 1
+      },
+      "rightButton": {
+        "field": "angular-z",
+        "value": -1
+      },
+      "foxglovePanelTitle": "Teleop"
+    },
+    "Gauge!22g0pfn": {
+      "path": "/battery_state.voltage",
+      "minValue": 9,
+      "maxValue": 12.6,
+      "colorMap": "red-yellow-green",
+      "colorMode": "colormap",
+      "gradient": [
+        "#0000ff",
+        "#ff00ff"
+      ],
+      "reverse": false,
+      "foxglovePanelTitle": "Battery Voltage"
+    },
+    "Publish!4edp1uv": {
+      "buttonText": "Dock",
+      "buttonTooltip": "",
+      "advancedView": false,
+      "value": "{}",
+      "datatype": "std_msgs/Empty",
+      "buttonColor": "#2f2f2f",
+      "topicName": "/dock",
+      "foxglovePanelTitle": "Dock"
+    },
+    "Publish!23vudmb": {
+      "buttonText": "Undock",
+      "buttonTooltip": "",
+      "advancedView": false,
+      "value": "{}",
+      "datatype": "std_msgs/Empty",
+      "buttonColor": "#2f2f2f",
+      "topicName": "/undock",
+      "foxglovePanelTitle": "Undock"
+    },
+    "3D!48x5301": {
+      "cameraState": {
+        "distance": 2.203662204696821,
+        "perspective": true,
+        "phi": 50.400057311045614,
+        "target": [
+          0,
+          0,
+          0
+        ],
+        "targetOffset": [
+          0.059226079644552156,
+          -0.05095175180253356,
+          2.0332150869469616e-16
+        ],
+        "targetOrientation": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "thetaOffset": 41.69223081065407,
+        "fovy": 45,
+        "near": 0.5,
+        "far": 5000
+      },
+      "followMode": "follow-position",
+      "scene": {
+        "transforms": {
+          "labelSize": 0.1
+        }
+      },
+      "transforms": {
+        "frame:base_link": {
+          "visible": true
+        },
+        "frame:body_link": {
+          "visible": false
+        },
+        "frame:antenna_connector_link": {
+          "visible": false
+        },
+        "frame:antenna_link": {
+          "visible": false
+        },
+        "frame:cover_link": {
+          "visible": false
+        },
+        "frame:camera_mount_bot_link": {
+          "visible": false
+        },
+        "frame:camera_mount_mid_link": {
+          "visible": false
+        },
+        "frame:camera_mount_top_link": {
+          "visible": false
+        },
+        "frame:camera_mount_link": {
+          "visible": false
+        },
+        "frame:oak": {
+          "visible": false
+        },
+        "frame:oak_imu_frame": {
+          "visible": false
+        },
+        "frame:oak_left_camera_frame": {
+          "visible": false
+        },
+        "frame:oak_left_camera_optical_frame": {
+          "visible": false
+        },
+        "frame:oak_model_origin": {
+          "visible": false
+        },
+        "frame:oak_rgb_camera_frame": {
+          "visible": false
+        },
+        "frame:oak_rgb_camera_optical_frame": {
+          "visible": false
+        },
+        "frame:marker_4": {
+          "visible": true
+        },
+        "frame:oak_right_camera_frame": {
+          "visible": false
+        },
+        "frame:oak_right_camera_optical_frame": {
+          "visible": false
+        },
+        "frame:slamtec_rplidar_s1_link": {
+          "visible": false
+        },
+        "frame:laser": {
+          "visible": false
+        },
+        "frame:fl_wheel_link": {
+          "visible": false
+        },
+        "frame:fr_wheel_link": {
+          "visible": false
+        },
+        "frame:imu_link": {
+          "visible": false
+        },
+        "frame:rl_wheel_link": {
+          "visible": false
+        },
+        "frame:rr_wheel_link": {
+          "visible": false
+        }
+      },
+      "topics": {
+        "/scan": {
+          "decayTime": 0.5,
+          "visible": true,
+          "colorField": "intensity",
+          "colorMode": "colormap",
+          "colorMap": "turbo"
+        },
+        "/global_costmap/costmap": {
+          "visible": true
+        },
+        "/plan": {
+          "visible": true
+        },
+        "/robot_description": {
+          "visible": true
+        },
+        "/oak/rgb/image_raw": {
+          "visible": false,
+          "frameLocked": true,
+          "cameraInfoTopic": "/oak/rgb/camera_info",
+          "distance": 1,
+          "planarProjectionFactor": 0,
+          "color": "#ffffff"
+        },
+        "/oak/rgb/image_raw/compressed": {
+          "visible": false
+        },
+        "/goal_pose": {
+          "visible": false,
+          "type": "arrow"
+        }
+      },
+      "layers": {},
+      "publish": {
+        "type": "pose",
+        "poseTopic": "/goal_pose",
+        "pointTopic": "/clicked_point",
+        "poseEstimateTopic": "/initialpose",
+        "poseEstimateXDeviation": 0.5,
+        "poseEstimateYDeviation": 0.5,
+        "poseEstimateThetaDeviation": 0.26179939
+      },
+      "imageMode": {}
+    }
+  },
+  "globalVariables": {},
+  "userNodes": {},
+  "playbackConfig": {
+    "speed": 1
+  },
+  "layout": {
+    "direction": "row",
+    "first": {
+      "first": {
+        "first": "Teleop!43h55pp",
+        "second": "Gauge!22g0pfn",
+        "direction": "column",
+        "splitPercentage": 54.4079409570577
+      },
+      "second": {
+        "first": "Publish!4edp1uv",
+        "second": "Publish!23vudmb",
+        "direction": "row"
+      },
+      "direction": "column",
+      "splitPercentage": 90
+    },
+    "second": "3D!48x5301",
+    "splitPercentage": 17.5
+  }
+}

@@ -16,6 +16,7 @@ ament_python_install_package(${PROJECT_NAME})
 
 install(PROGRAMS
   scripts/aruco_dock_detector
+  scripts/topic_docking
   DESTINATION lib/${PROJECT_NAME}
 )
 

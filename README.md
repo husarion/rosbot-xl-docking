@@ -32,6 +32,8 @@ Available recipes:
     udev                       # [ROSbot] setup udevs for managing OAK-1 USB camera permissions
     rosbot                     # [ROSbot] start containers on a physical ROSbot XL
     rosbot-navless             # [ROSbot] start containers on a physical ROSbot XL (without Nav2)
+    rosbot-foxglove            # [ROSbot] start containers on a physical ROSbot XL (with Foxglove)
+    rosbot-navless-foxglove    # [ROSbot] start containers on a physical ROSbot XL (wthout Nav2, with Foxglove)
     rviz                       # [PC] start RViz
     teleop                     # [PC] start RQT Image View with keyboard teleop and joy2twist
     dock                       # [PC] dock
@@ -165,3 +167,15 @@ Remember to undock first!
 
 At any time, ROSbot can autonomously return to the station and attach back to it from any location in the room.
 To do that, use `just dock` like before.
+
+### 🦊 Step 7: Foxglove
+
+You can run the project with Foxglove as a visualization tool.
+To do that, on your ROSbot execute:
+   
+```bash
+just rosbot-foxglove
+# just rosbot-navless-foxglove
+```
+
+and then go to `http://{ROSbot hostname/address}:8080/ui` in your web browser.

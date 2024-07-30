@@ -8,6 +8,7 @@ from launch.substitutions import LaunchConfiguration
 def launch_setup(context):
     aruco_tracker_params_file = LaunchConfiguration("aruco_tracker_params_file").perform(context)
     nav2_docking_server_params_file = LaunchConfiguration("nav2_docking_server_params_file").perform(context)
+    marker_id = LaunchConfiguration("marker_id").perform(context)
 
     return [
         Node(
@@ -16,7 +17,7 @@ def launch_setup(context):
             name="docking_server",
             parameters=[
                 nav2_docking_server_params_file,
-                {"use_sim_time": True}
+                {"use_sim_time": False}
             ],
             remappings=[("/tf", "tf"), ("/tf_static", "tf_static")],
         ),
@@ -26,7 +27,7 @@ def launch_setup(context):
             name="nav2_docking_lifecycle_manager",
             parameters=[
                 {"autostart": True, "node_names": ["docking_server"]},
-                {"use_sim_time": True},
+                {"use_sim_time": False},
             ],
         ),
         Node(
@@ -35,7 +36,7 @@ def launch_setup(context):
             name="aruco_tracker",
             parameters=[
                 aruco_tracker_params_file,
-                {"use_sim_time": True},
+                {"use_sim_time": False},
             ],
         ),
         Node(
@@ -44,8 +45,16 @@ def launch_setup(context):
             executable="aruco_dock_detector",
             parameters=[
                 {
-                    "use_sim_time": True
+                    "use_sim_time": False,
+                    "marker_id": int(marker_id),
                 }
+            ],
+        ),
+        Node(
+            package="rosbot_xl_docking",
+            executable="topic_docking",
+            parameters=[
+                {"use_sim_time": False},
             ],
         ),
     ]
@@ -69,6 +78,11 @@ def generate_launch_description():
                     / "nav2_docking_server.yaml"
                 ),
                 description="Path to the nav2 docking server parameters file",
+            ),
+            DeclareLaunchArgument(
+                "marker_id",
+                default_value="0",
+                description="marker_id of the dock",
             ),
             OpaqueFunction(function=launch_setup),
         ]
